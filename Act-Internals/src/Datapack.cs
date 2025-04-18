@@ -13,9 +13,10 @@ public class Datapack
     // Constants
     // ---------
 
-    // Only 4 characters for the header's name
+    // 4 characters for the header's name
     public const int HeaderNameSize = 0x4;
 
+    public const int HeaderSize = 0x10;
     public const int EntrySize = 0x10;
 
     // -------------
@@ -32,7 +33,7 @@ public class Datapack
         {
             this.name = name;
             this.startOffset = offset;
-            this.endOffset = this.startOffset + EntrySize;
+            this.endOffset = this.startOffset + HeaderSize;
         }
     }
 
@@ -47,10 +48,10 @@ public class Datapack
             {
                 long startOffset = fs.Position;
 
-                byte[] buffer = br.ReadBytes(EntrySize);
-                if (buffer.Length < EntrySize) break;
+                byte[] buffer = br.ReadBytes(HeaderSize);
+                if (buffer.Length < HeaderSize) break;
 
-                string signature = Encoding.ASCII.GetString(buffer, EntrySize - 4, 4);
+                string signature = Encoding.ASCII.GetString(buffer, HeaderSize - 4, 4);
                 if (signature != "CHNK") continue;
 
                 string name = Encoding.ASCII.GetString(buffer, 0, HeaderNameSize).Trim();
